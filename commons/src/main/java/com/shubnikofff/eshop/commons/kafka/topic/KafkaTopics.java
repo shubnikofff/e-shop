@@ -1,4 +1,4 @@
-package com.shubnikofff.eshop.commons.kafka;
+package com.shubnikofff.eshop.commons.kafka.topic;
 
 public final class KafkaTopics {
 
