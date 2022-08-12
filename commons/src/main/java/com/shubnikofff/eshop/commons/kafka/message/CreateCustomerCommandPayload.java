@@ -2,7 +2,7 @@ package com.shubnikofff.eshop.commons.kafka.message;
 
 import java.math.BigDecimal;
 
-public record CreateCustomerCommandMessage(
+public record CreateCustomerCommandPayload(
 		String customerName,
 		BigDecimal initialBalance
 ) {

@@ -1,5 +1,8 @@
 package com.shubnikofff.eshop.frontend.dto;
 
 
-public record CreateCustomerRequest(String name) {
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
+
+public record CreateCustomerRequest(@NotNull String name, @NotNull BigDecimal initialBalance) {
 }

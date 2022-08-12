@@ -1,9 +1,12 @@
 package com.shubnikofff.eshop.frontend.service;
 
+import com.shubnikofff.eshop.commons.kafka.message.CreateCustomerCommandPayload;
+import com.shubnikofff.eshop.commons.kafka.message.KafkaMessage;
 import com.shubnikofff.eshop.commons.kafka.topic.KafkaTopics;
 import com.shubnikofff.eshop.frontend.dto.CreateCustomerRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -12,6 +15,7 @@ import reactor.core.scheduler.Schedulers;
 import reactor.kafka.receiver.KafkaReceiver;
 import reactor.kafka.sender.KafkaSender;
 import reactor.kafka.sender.SenderRecord;
+import reactor.kafka.sender.SenderResult;
 
 import javax.annotation.PostConstruct;
 
@@ -19,11 +23,13 @@ import javax.annotation.PostConstruct;
 @RequiredArgsConstructor
 public class CustomerService {
 
+	@Value("${spring.application.name}")
+	static String applicationName;
 	private final Sinks.Many<Object> eventPublisher = Sinks.many().multicast().directBestEffort();
 
 	private final KafkaReceiver<Integer, String> customerEventsReceiver;
 
-	private final KafkaSender<Integer, String> kafkaSender;
+	private final KafkaSender<Object, KafkaMessage> kafkaSender;
 
 	@PostConstruct
 	private void consumeEvents() {
@@ -41,15 +47,18 @@ public class CustomerService {
 		return eventPublisher.asFlux();
 	}
 
-	public Mono<String> sendCreateCustomerCommand(CreateCustomerRequest createCustomerRequest) {
-		final var producerRecord = new ProducerRecord<Integer, String>(
-				KafkaTopics.CUSTOMER_EVENT_TOPIC, "Customer " + createCustomerRequest.name() + " created");
+	public Flux<Object> sendCreateCustomerCommand(CreateCustomerRequest createCustomerRequest) {
+
+		final var kafkaMessage = new KafkaMessage<CreateCustomerCommandPayload>(applicationName, new CreateCustomerCommandPayload(
+				createCustomerRequest.name(),
+				createCustomerRequest.initialBalance()
+		));
+
+		final var producerRecord = new ProducerRecord<Object, KafkaMessage>(KafkaTopics.CUSTOMER_EVENT_TOPIC, kafkaMessage);
 
 
 		final var senderRecord = SenderRecord.create(producerRecord, createCustomerRequest);
 
-		kafkaSender.send(Mono.just(senderRecord)).subscribe();
-
-		return Mono.just(createCustomerRequest.name());
+		return kafkaSender.send(Mono.just(senderRecord)).map(SenderResult::correlationMetadata);
 	}
 }

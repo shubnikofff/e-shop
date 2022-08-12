@@ -7,15 +7,19 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.IntegerDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 import reactor.core.scheduler.Schedulers;
 import reactor.kafka.receiver.KafkaReceiver;
 import reactor.kafka.receiver.ReceiverOptions;
 
 import javax.annotation.PostConstruct;
+import javax.validation.Valid;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +39,7 @@ public class CustomerController {
 	}
 
 	@PostMapping(value = "/")
-	public Mono<String> createCustomer(@RequestBody CreateCustomerRequest request) {
+	public Flux<Object> createCustomer(@RequestBody @Valid CreateCustomerRequest request) {
 		return customerService.sendCreateCustomerCommand(request);
 	}
 

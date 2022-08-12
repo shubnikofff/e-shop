@@ -7,8 +7,8 @@ services:
       - '2181:2181'
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
-    volumes:
-      - zookeeper:/bitnami/zookeeper
+#    volumes:
+#      - zookeeper:/bitnami/zookeeper
 
   kafka:
     image: bitnami/kafka
@@ -22,11 +22,11 @@ services:
       - ALLOW_PLAINTEXT_LISTENER=yes
     depends_on:
       - zookeeper
-    volumes:
-      - kafka:/bitnami/kafka
+#    volumes:
+#      - kafka:/bitnami/kafka
     links:
       - zookeeper
 
-volumes:
-  zookeeper:
-  kafka:
+#volumes:
+#  zookeeper:
+#  kafka:

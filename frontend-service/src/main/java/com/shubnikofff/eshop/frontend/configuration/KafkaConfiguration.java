@@ -1,5 +1,6 @@
 package com.shubnikofff.eshop.frontend.configuration;
 
+import com.shubnikofff.eshop.commons.kafka.message.KafkaMessage;
 import com.shubnikofff.eshop.commons.kafka.topic.KafkaTopics;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -40,8 +41,8 @@ public class KafkaConfiguration {
 	}
 
 	@Bean
-	public KafkaSender<Integer, String> kafkaSender() {
-		final var senderOptions = SenderOptions.<Integer, String>create(producerProperties)
+	public KafkaSender<Object, KafkaMessage> kafkaSender() {
+		final var senderOptions = SenderOptions.<Object, KafkaMessage>create(producerProperties)
 				.maxInFlight(1024);
 
 		return KafkaSender.create(senderOptions);
