@@ -9,10 +9,13 @@ import java.util.Map;
 
 final public class KafkaSenderFactory {
 
-	private KafkaSenderFactory() {
+	private final String bootstrapServers;
+
+	public KafkaSenderFactory(String bootstrapServers) {
+		this.bootstrapServers = bootstrapServers;
 	}
 
-	public static <K, V> KafkaSender<K, V> create(String bootstrapServers) {
+	public <K, V> KafkaSender<K, V> create() {
 		final Map<String, Object> configProperties = Map.of(
 				ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers,
 				ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class,
