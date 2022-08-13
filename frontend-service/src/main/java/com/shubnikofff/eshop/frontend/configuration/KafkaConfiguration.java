@@ -1,19 +1,16 @@
 package com.shubnikofff.eshop.frontend.configuration;
 
-import com.shubnikofff.eshop.commons.kafka.message.KafkaMessage;
+import com.shubnikofff.eshop.commons.kafka.message.CreateCustomerCommandMessage;
+import com.shubnikofff.eshop.commons.kafka.util.KafkaSenderFactory;
 import com.shubnikofff.eshop.commons.kafka.topic.KafkaTopics;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.IntegerDeserializer;
-import org.apache.kafka.common.serialization.IntegerSerializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import reactor.kafka.receiver.KafkaReceiver;
 import reactor.kafka.receiver.ReceiverOptions;
 import reactor.kafka.sender.KafkaSender;
-import reactor.kafka.sender.SenderOptions;
 
 import java.util.Collections;
 import java.util.Map;
@@ -21,16 +18,12 @@ import java.util.Map;
 @Configuration
 public class KafkaConfiguration {
 
-	private final Map<String, Object> producerProperties;
+	private final String bootstrapServers;
 
 	private final Map<String, Object> consumerProperties;
 
 	public KafkaConfiguration(KafkaConfigurationProperties properties) {
-		producerProperties = Map.of(
-				ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, properties.getBootstrapServers(),
-				ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class,
-				ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class
-		);
+		bootstrapServers = properties.getBootstrapServers();
 
 		consumerProperties = Map.of(
 				ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, properties.getBootstrapServers(),
@@ -41,11 +34,8 @@ public class KafkaConfiguration {
 	}
 
 	@Bean
-	public KafkaSender<Object, KafkaMessage> kafkaSender() {
-		final var senderOptions = SenderOptions.<Object, KafkaMessage>create(producerProperties)
-				.maxInFlight(1024);
-
-		return KafkaSender.create(senderOptions);
+	public KafkaSender<Object, CreateCustomerCommandMessage> createCustomerCommandSender() {
+		return KafkaSenderFactory.create(bootstrapServers);
 	}
 
 	@Bean
