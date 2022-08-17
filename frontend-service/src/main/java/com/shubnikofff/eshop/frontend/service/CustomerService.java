@@ -1,6 +1,7 @@
 package com.shubnikofff.eshop.frontend.service;
 
 import com.shubnikofff.eshop.commons.kafka.message.CreateCustomerCommandMessage;
+import com.shubnikofff.eshop.commons.kafka.message.CustomerEventMessage;
 import com.shubnikofff.eshop.commons.kafka.topic.KafkaTopics;
 import com.shubnikofff.eshop.frontend.dto.CreateCustomerRequest;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class CustomerService {
 	static String applicationName;
 	private final Sinks.Many<Object> eventPublisher = Sinks.many().multicast().directBestEffort();
 
-	private final KafkaReceiver<Integer, String> customerEventsReceiver;
+	private final KafkaReceiver<Object, CustomerEventMessage> customerEventsReceiver;
 
 	private final KafkaSender<Object, CreateCustomerCommandMessage> createCustomerCommandSender;
 
@@ -47,7 +48,7 @@ public class CustomerService {
 	}
 
 	public Flux<Object> sendCreateCustomerCommand(CreateCustomerRequest createCustomerRequest) {
-		final var producerRecord = new ProducerRecord<>(KafkaTopics.CUSTOMER_EVENT_TOPIC, new CreateCustomerCommandMessage(
+		final var producerRecord = new ProducerRecord<>(KafkaTopics.CUSTOMER_COMMAND_TOPIC, new CreateCustomerCommandMessage(
 				createCustomerRequest.name(),
 				createCustomerRequest.initialBalance()
 		));

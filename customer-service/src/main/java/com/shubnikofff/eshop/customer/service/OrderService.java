@@ -11,6 +11,6 @@ public class OrderService {
 	final private KafkaTemplate<Object, Object> kafkaTemplate;
 
 	public void createOrder(Object order) {
-		kafkaTemplate.send("orders.events.v1", order);
+//		kafkaTemplate.send("orders.events.v1", order);
 	}
 }
