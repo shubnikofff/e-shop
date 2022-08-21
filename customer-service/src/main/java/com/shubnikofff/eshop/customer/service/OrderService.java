@@ -8,9 +8,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class OrderService {
 
-	final private KafkaTemplate<Object, Object> kafkaTemplate;
+//	final private KafkaTemplate<Object, Object> kafkaTemplate;
 
-	public void createOrder(Object order) {
+	public <T> Class<T>  createOrder (T order) {
+		return (Class<T>) order.getClass();
 //		kafkaTemplate.send("orders.events.v1", order);
 	}
 }

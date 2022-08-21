@@ -1,47 +1,30 @@
 package com.shubnikofff.eshop.customer.configuration;
 
 import com.shubnikofff.eshop.commons.kafka.message.CreateCustomerCommandMessage;
-import com.shubnikofff.eshop.commons.kafka.util.KafkaMessageDeserializer;
+import com.shubnikofff.eshop.commons.kafka.message.CustomerEventMessage;
+import com.shubnikofff.eshop.commons.kafka.util.KafkaFactory;
 import org.apache.kafka.clients.admin.NewTopic;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
-import org.springframework.kafka.core.ConsumerFactory;
-import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.support.serializer.JsonDeserializer;
-
-import java.util.Collections;
-import java.util.Map;
+import org.springframework.kafka.core.KafkaTemplate;
 
 @Configuration
 public class KafkaConfiguration {
 
-	@Bean
-	public NewTopic orderEventsTopic() {
-		return new NewTopic("orders.events.v1", 1, (short) 1);
-	}
+	private final KafkaFactory kafkaFactory;
 
-//	@Bean
-	private  <T> ConsumerFactory<String, T> greetingConsumerFactory(Class<T> valueType) {
-		// ...
-		return new DefaultKafkaConsumerFactory<>(
-				Map.of(
-						ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092",
-						ConsumerConfig.GROUP_ID_CONFIG, "customer-service"
-				),
-				new StringDeserializer(),
-				new JsonDeserializer<>(valueType)
-		);
+	public KafkaConfiguration(KafkaConfigurationProperties properties) {
+		kafkaFactory = new KafkaFactory(properties.getBootstrapServers(), properties.getGroupId());
 	}
 
 	@Bean
-	public ConcurrentKafkaListenerContainerFactory<String, CreateCustomerCommandMessage>
-	greetingKafkaListenerContainerFactory() {
+	public KafkaTemplate<String, CustomerEventMessage> customerEventTemplate() {
+		return new KafkaTemplate<>(kafkaFactory.createProducerFactory());
+	}
 
-		final var containerFactory = new ConcurrentKafkaListenerContainerFactory<String, CreateCustomerCommandMessage>();
-		containerFactory.setConsumerFactory(greetingConsumerFactory(CreateCustomerCommandMessage.class));
-		return containerFactory;
+	@Bean
+	public ConcurrentKafkaListenerContainerFactory<String, CreateCustomerCommandMessage> createCustomerCommandListener() {
+		return kafkaFactory.createListenerContainerFactory(CreateCustomerCommandMessage.class);
 	}
 }

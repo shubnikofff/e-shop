@@ -1,3 +1,6 @@
 spring:
   application:
     name: customer-service
+kafka:
+  bootstrap-servers: localhost:9092
+  group-id: customer-service
