@@ -3,7 +3,6 @@ package com.shubnikofff.eshop.customer.configuration;
 import com.shubnikofff.eshop.commons.kafka.message.CreateCustomerCommandMessage;
 import com.shubnikofff.eshop.commons.kafka.message.CustomerEventMessage;
 import com.shubnikofff.eshop.commons.kafka.util.KafkaFactory;
-import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;

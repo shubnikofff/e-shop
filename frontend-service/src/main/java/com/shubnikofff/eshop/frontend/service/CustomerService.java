@@ -2,8 +2,10 @@ package com.shubnikofff.eshop.frontend.service;
 
 import com.shubnikofff.eshop.commons.kafka.message.CreateCustomerCommandMessage;
 import com.shubnikofff.eshop.commons.kafka.message.CustomerEventMessage;
+import com.shubnikofff.eshop.commons.kafka.message.UpdateCustomerCommand;
 import com.shubnikofff.eshop.commons.kafka.topic.KafkaTopics;
 import com.shubnikofff.eshop.frontend.dto.CreateCustomerRequest;
+import com.shubnikofff.eshop.frontend.dto.UpdateCustomerRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +33,8 @@ public class CustomerService {
 
 	private final KafkaSender<Object, CreateCustomerCommandMessage> createCustomerCommandSender;
 
+	private final KafkaSender<Object, UpdateCustomerCommand> updateCustomerCommandSender;
+
 	@PostConstruct
 	private void consumeEvents() {
 		customerEventsReceiver.receive()
@@ -55,5 +59,14 @@ public class CustomerService {
 		final var senderRecord = SenderRecord.create(producerRecord, createCustomerRequest);
 
 		return createCustomerCommandSender.send(Mono.just(senderRecord)).map(SenderResult::correlationMetadata);
+	}
+
+	public Flux<Object> sendUpdateCustomerCommand(UpdateCustomerRequest updateCustomerRequest) {
+		final var producerRecord = new ProducerRecord<>(KafkaTopics.CUSTOMER_COMMAND_TOPIC, new UpdateCustomerCommand(
+				updateCustomerRequest.name()
+		));
+		final var senderRecord = SenderRecord.create(producerRecord, updateCustomerRequest);
+
+		return updateCustomerCommandSender.send(Mono.just(senderRecord)).map(SenderResult::correlationMetadata);
 	}
 }
