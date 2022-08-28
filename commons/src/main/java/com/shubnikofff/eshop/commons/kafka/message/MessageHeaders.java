@@ -9,5 +9,5 @@ final public class MessageHeaders {
 	 */
 	public static final String TYPE = "type";
 
-	public static final String SENDER = "type";
+	public static final String SENDER = "sender";
 }
