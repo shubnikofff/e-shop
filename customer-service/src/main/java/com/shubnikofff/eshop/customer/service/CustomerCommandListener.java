@@ -18,7 +18,7 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 @KafkaListener(topics = KafkaTopics.CUSTOMER_COMMAND_TOPIC, containerFactory = "kafkaListenerContainerFactory")
-public class CustomerService {
+public class CustomerCommandListener {
 
 	private final KafkaTemplate<UUID, CustomerEventMessage> customerEventTemplate;
 
