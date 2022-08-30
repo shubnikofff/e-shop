@@ -1,4 +1,6 @@
 package com.shubnikofff.eshop.commons.kafka.message;
 
-public record UpdateCustomerCommand(String customerName) {
+import java.io.Serializable;
+
+public record UpdateCustomerCommand(String customerName) implements Serializable {
 }

@@ -4,8 +4,8 @@ import com.shubnikofff.eshop.commons.kafka.message.CreateCustomerCommandMessage;
 import com.shubnikofff.eshop.commons.kafka.message.CustomerEventMessage;
 import com.shubnikofff.eshop.commons.kafka.message.UpdateCustomerCommand;
 import com.shubnikofff.eshop.commons.kafka.topic.KafkaTopics;
-import com.shubnikofff.eshop.commons.kafka.util.KafkaMessageDeserializer;
-import com.shubnikofff.eshop.commons.kafka.util.KafkaMessageSerializer;
+import com.shubnikofff.eshop.commons.kafka.serialization.MessageDeserializer;
+import com.shubnikofff.eshop.commons.kafka.serialization.MessageSerializer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -32,14 +32,14 @@ public class KafkaConfiguration {
 		producerConfig = Map.of(
 				ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, properties.getBootstrapServers(),
 				ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class,
-				ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaMessageSerializer.class
+				ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, MessageSerializer.class
 		);
 
 		consumerConfig = Map.of(
 				ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, properties.getBootstrapServers(),
 				ConsumerConfig.GROUP_ID_CONFIG, properties.getGroupId(),
 				ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class,
-				ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaMessageDeserializer.class
+				ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, MessageDeserializer.class
 		);
 	}
 
@@ -58,7 +58,7 @@ public class KafkaConfiguration {
 		return createReceiver(Collections.singleton(KafkaTopics.CUSTOMER_EVENT_TOPIC));
 	}
 
-	private  <K, V> KafkaReceiver<K, V> createReceiver(Collection<String> topics) {
+	private <K, V> KafkaReceiver<K, V> createReceiver(Collection<String> topics) {
 		final var receiverOptions = ReceiverOptions.<K, V>create(consumerConfig)
 				.subscription(topics);
 

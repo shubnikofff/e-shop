@@ -1,6 +1,8 @@
-package com.shubnikofff.eshop.commons.kafka.util;
+package com.shubnikofff.eshop.commons.kafka.serialization;
 
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.shubnikofff.eshop.commons.kafka.message.MessageHeaders;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.serialization.Deserializer;
@@ -10,13 +12,13 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 
-public class KafkaMessageDeserializer<T> implements Deserializer<T> {
+public class MessageDeserializer<T> implements Deserializer<T> {
 
-	private final static Logger logger = Logger.getLogger(KafkaMessageDeserializer.class.getName());
+	private final static Logger logger = Logger.getLogger(MessageDeserializer.class.getName());
 
 	private final static ObjectMapper objectMapper = new ObjectMapper();
 
-	private Class<T> valueType;
+	private JavaType dataType;
 
 	@Override
 	public T deserialize(String topic, byte[] data) {
@@ -26,7 +28,7 @@ public class KafkaMessageDeserializer<T> implements Deserializer<T> {
 		}
 
 		try {
-			return objectMapper.readValue(data, valueType);
+			return objectMapper.readValue(data, dataType);
 		} catch (IOException e) {
 			throw new DeserializationException("Error when deserializing kafka message", data, false, e.getCause());
 		}
@@ -34,15 +36,13 @@ public class KafkaMessageDeserializer<T> implements Deserializer<T> {
 
 	@Override
 	public T deserialize(String topic, Headers headers, byte[] data) {
-		try {
-			final var className = objectMapper.readValue(headers.lastHeader(MessageHeaders.TYPE).value(), String.class);
-			valueType = (Class<T>) Class.forName(className);
-		} catch (IOException e) {
-			throw new DeserializationException("Error when deserializing header type of kafka message", headers.lastHeader("type").value(), false, e.getCause());
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException("Cannot find message class at deserializing", e.getCause());
-		}
+		dataType = resolveType(topic, data, headers);
 
 		return deserialize(topic, data);
+	}
+
+	public static JavaType resolveType(String topic, byte[] data, Headers headers) {
+		final var type = new String(headers.lastHeader(MessageHeaders.TYPE).value());
+		return TypeFactory.defaultInstance().constructFromCanonical(type);
 	}
 }

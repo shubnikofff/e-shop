@@ -1,6 +1,16 @@
 spring:
   application:
     name: customer-service
-kafka:
-  bootstrap-servers: localhost:9092
-  group-id: customer-service
+  kafka:
+    bootstrap-servers: localhost:9092
+    client-id: customer-service
+    consumer:
+      group-id: customer-service
+      key-deserializer: org.apache.kafka.common.serialization.UUIDDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        "[spring.json.value.type.method]": com.shubnikofff.eshop.commons.kafka.serialization.MessageDeserializer.resolveType
+        "[spring.json.trusted.packages]": com.shubnikofff.eshop.commons.kafka.message
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.UUIDSerializer
+      value-serializer: com.shubnikofff.eshop.commons.kafka.serialization.MessageSerializer

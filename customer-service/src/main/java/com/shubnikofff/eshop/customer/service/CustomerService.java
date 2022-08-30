@@ -9,20 +9,22 @@ import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.kafka.support.converter.KafkaMessageHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-//@KafkaListener(id = "customer-service", topics = KafkaTopics.CUSTOMER_COMMAND_TOPIC, containerFactory = )
+@KafkaListener(topics = KafkaTopics.CUSTOMER_COMMAND_TOPIC, containerFactory = "kafkaListenerContainerFactory")
 public class CustomerService {
 
-	private final KafkaTemplate<Object, CustomerEventMessage> customerEventTemplate;
+	private final KafkaTemplate<UUID, CustomerEventMessage> customerEventTemplate;
 
-	@KafkaListener(topics = KafkaTopics.CUSTOMER_COMMAND_TOPIC, containerFactory = "createCustomerCommandListener")
-//	@KafkaHandler
+//	@KafkaListener(topics = KafkaTopics.CUSTOMER_COMMAND_TOPIC, containerFactory = "createCustomerCommandListener")
+	@KafkaHandler
 	void handleCreateCustomerCommand(CreateCustomerCommandMessage message, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
 		System.out.println("Customer name: " + message.customerName() + " topic: " + topic);
 		customerEventTemplate.send(KafkaTopics.CUSTOMER_EVENT_TOPIC, new CustomerEventMessage(
@@ -32,8 +34,8 @@ public class CustomerService {
 		));
 	}
 
-	@KafkaListener(topics = KafkaTopics.CUSTOMER_COMMAND_TOPIC, containerFactory = "updateCustomerCommandListener")
-//	@KafkaHandler
+//	@KafkaListener(topics = KafkaTopics.CUSTOMER_COMMAND_TOPIC, containerFactory = "updateCustomerCommandListener")
+	@KafkaHandler
 	void handleUpdateCustomerCommand(UpdateCustomerCommand message, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
 		System.out.println("Customer name: " + message.customerName() + " topic: " + topic);
 		customerEventTemplate.send(KafkaTopics.CUSTOMER_EVENT_TOPIC, new CustomerEventMessage(
@@ -41,5 +43,11 @@ public class CustomerService {
 				BigDecimal.valueOf(10050),
 				"Customer updated"
 		));
+	}
+
+	@KafkaHandler(isDefault = true)
+	void defaultHandler(Object message, @Header(KafkaMessageHeaders.CONTENT_TYPE) String type) {
+		System.out.println(type);
+		System.out.println(message);
 	}
 }
