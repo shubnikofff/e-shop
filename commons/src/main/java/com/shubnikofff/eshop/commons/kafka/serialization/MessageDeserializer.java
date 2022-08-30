@@ -3,10 +3,9 @@ package com.shubnikofff.eshop.commons.kafka.serialization;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.shubnikofff.eshop.commons.kafka.message.MessageHeaders;
+import com.shubnikofff.eshop.commons.kafka.message.KafkaMessageHeaders;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.serialization.Deserializer;
-import org.springframework.kafka.support.serializer.DeserializationException;
 
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -30,19 +29,18 @@ public class MessageDeserializer<T> implements Deserializer<T> {
 		try {
 			return objectMapper.readValue(data, dataType);
 		} catch (IOException e) {
-			throw new DeserializationException("Error when deserializing kafka message", data, false, e.getCause());
+			throw new RuntimeException("Error when deserializing kafka message", e.getCause());
 		}
 	}
 
 	@Override
 	public T deserialize(String topic, Headers headers, byte[] data) {
-		dataType = resolveType(topic, data, headers);
-
+		dataType = resolveType(data, headers);
 		return deserialize(topic, data);
 	}
 
-	public static JavaType resolveType(String topic, byte[] data, Headers headers) {
-		final var type = new String(headers.lastHeader(MessageHeaders.TYPE).value());
+	public static JavaType resolveType(byte[] data, Headers headers) {
+		final var type = new String(headers.lastHeader(KafkaMessageHeaders.TYPE).value());
 		return TypeFactory.defaultInstance().constructFromCanonical(type);
 	}
 }

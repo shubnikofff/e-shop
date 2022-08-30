@@ -1,8 +1,8 @@
 package com.shubnikofff.eshop.commons.kafka.message;
 
-final public class MessageHeaders {
+final public class KafkaMessageHeaders {
 
-	private MessageHeaders() {}
+	private KafkaMessageHeaders() {}
 
 	/**
 	 * Type of the message body value

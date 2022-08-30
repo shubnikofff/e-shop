@@ -2,7 +2,7 @@ package com.shubnikofff.eshop.frontend.configuration;
 
 import com.shubnikofff.eshop.commons.kafka.message.CreateCustomerCommandMessage;
 import com.shubnikofff.eshop.commons.kafka.message.CustomerEventMessage;
-import com.shubnikofff.eshop.commons.kafka.message.UpdateCustomerCommand;
+import com.shubnikofff.eshop.commons.kafka.message.UpdateCustomerCommandMessage;
 import com.shubnikofff.eshop.commons.kafka.topic.KafkaTopics;
 import com.shubnikofff.eshop.commons.kafka.serialization.MessageDeserializer;
 import com.shubnikofff.eshop.commons.kafka.serialization.MessageSerializer;
@@ -49,7 +49,7 @@ public class KafkaConfiguration {
 	}
 
 	@Bean
-	public KafkaSender<Object, UpdateCustomerCommand> updateCustomerCommandSender() {
+	public KafkaSender<Object, UpdateCustomerCommandMessage> updateCustomerCommandSender() {
 		return createSender();
 	}
 
@@ -65,7 +65,7 @@ public class KafkaConfiguration {
 		return KafkaReceiver.create(receiverOptions);
 	}
 
-	public <K, V> KafkaSender<K, V> createSender() {
+	private  <K, V> KafkaSender<K, V> createSender() {
 		final var senderOptions = SenderOptions.<K, V>create(producerConfig)
 				.maxInFlight(1024);
 

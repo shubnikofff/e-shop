@@ -2,7 +2,7 @@ package com.shubnikofff.eshop.frontend.service;
 
 import com.shubnikofff.eshop.commons.kafka.message.CreateCustomerCommandMessage;
 import com.shubnikofff.eshop.commons.kafka.message.CustomerEventMessage;
-import com.shubnikofff.eshop.commons.kafka.message.UpdateCustomerCommand;
+import com.shubnikofff.eshop.commons.kafka.message.UpdateCustomerCommandMessage;
 import com.shubnikofff.eshop.commons.kafka.topic.KafkaTopics;
 import com.shubnikofff.eshop.frontend.dto.CreateCustomerRequest;
 import com.shubnikofff.eshop.frontend.dto.UpdateCustomerRequest;
@@ -33,7 +33,7 @@ public class CustomerService {
 
 	private final KafkaSender<Object, CreateCustomerCommandMessage> createCustomerCommandSender;
 
-	private final KafkaSender<Object, UpdateCustomerCommand> updateCustomerCommandSender;
+	private final KafkaSender<Object, UpdateCustomerCommandMessage> updateCustomerCommandSender;
 
 	@PostConstruct
 	private void consumeEvents() {
@@ -62,7 +62,7 @@ public class CustomerService {
 	}
 
 	public Flux<Object> sendUpdateCustomerCommand(UpdateCustomerRequest updateCustomerRequest) {
-		final var producerRecord = new ProducerRecord<>(KafkaTopics.CUSTOMER_COMMAND_TOPIC, new UpdateCustomerCommand(
+		final var producerRecord = new ProducerRecord<>(KafkaTopics.CUSTOMER_COMMAND_TOPIC, new UpdateCustomerCommandMessage(
 				updateCustomerRequest.name()
 		));
 		final var senderRecord = SenderRecord.create(producerRecord, updateCustomerRequest);
