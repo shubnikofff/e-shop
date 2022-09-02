@@ -27,6 +27,21 @@ services:
     links:
       - zookeeper
 
+  axon-server:
+    image: axoniq/axonserver
+    ports:
+      - "8024:8024"
+      - "8124:8124"
+#    volumes:
+#      - axon-server-data:/data
+#      - axon-server-events:/eventdata
+    environment:
+      - AXONIQ_AXONSERVER_NAME=E-Shop Axon Server
+      - AXONIQ_AXONSERVER_HOSTNAME=localhost
+      - AXONIQ_AXONSERVER_DEVMODE_ENABLED=true
+
 #volumes:
 #  zookeeper:
 #  kafka:
+#  axon-server-data:
+#  axon-server-events:
