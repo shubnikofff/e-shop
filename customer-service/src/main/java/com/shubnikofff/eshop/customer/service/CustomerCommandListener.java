@@ -4,8 +4,10 @@ import com.shubnikofff.eshop.commons.kafka.message.CreateCustomerCommandMessage;
 import com.shubnikofff.eshop.commons.kafka.message.CustomerEventMessage;
 import com.shubnikofff.eshop.commons.kafka.message.UpdateCustomerCommandMessage;
 import com.shubnikofff.eshop.commons.kafka.topic.KafkaTopics;
+import com.shubnikofff.eshop.customer.command.CreateCustomerCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -22,14 +24,30 @@ public class CustomerCommandListener {
 
 	private final KafkaTemplate<UUID, CustomerEventMessage> customerEventTemplate;
 
+	private final CommandGateway commandGateway;
+
 	@KafkaHandler
 	void handleCreateCustomerCommand(CreateCustomerCommandMessage message) {
 		log.info("Received message {}", message);
-		customerEventTemplate.send(KafkaTopics.CUSTOMER_EVENT_TOPIC, new CustomerEventMessage(
-				message.customerName(),
-				message.initialBalance(),
-				"Customer created"
-		));
+
+//		commandGateway.sendAndWait(new CreateCustomerCommand(
+//				UUID.randomUUID(),
+//				message.customerName()
+//		));
+//				.thenAccept(result -> log("Result from command gateway: {}", result));
+
+		commandGateway.sendAndWait(
+				CreateCustomerCommand.builder()
+						.customerId(UUID.randomUUID())
+						.customerName(message.customerName())
+						.build()
+		);
+
+//		customerEventTemplate.send(KafkaTopics.CUSTOMER_EVENT_TOPIC, new CustomerEventMessage(
+//				message.customerName(),
+//				message.initialBalance(),
+//				"Customer created"
+//		));
 	}
 
 	@KafkaHandler

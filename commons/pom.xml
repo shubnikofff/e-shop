@@ -12,18 +12,26 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <kafka-clients.version>3.1.1</kafka-clients.version>
+        <axon-kafka.version>4.5.4</axon-kafka.version>
+        <jackson-databind.version>2.13.3</jackson-databind.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
-            <version>3.1.1</version>
+            <version>${kafka-clients.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.axonframework.extensions.kafka</groupId>
+            <artifactId>axon-kafka</artifactId>
+            <version>${axon-kafka.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.13.3</version>
+            <version>${jackson-databind.version}</version>
         </dependency>
     </dependencies>
 

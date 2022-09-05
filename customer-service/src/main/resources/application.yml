@@ -14,3 +14,24 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.UUIDSerializer
       value-serializer: com.shubnikofff.eshop.commons.kafka.serialization.MessageSerializer
+
+axon:
+  kafka:
+    bootstrap-servers: localhost:9092
+    client-id: customer-service
+    default-topic: customer.event.v1
+    publisher:
+      confirmation-mode: transactional
+    producer:
+      transaction-id-prefix: customer-event
+      event-processor-mode: subscribing
+#      properties:
+#        "[key-serializer]": org.apache.kafka.common.serialization.UUIDSerializer
+#        "[value-serializer]": com.shubnikofff.eshop.commons.kafka.serialization.MessageSerializer
+#    consumer:
+#      enable-auto-commit: true
+#      auto-commit-interval: 3000
+#      event-processor-mode: tracking
+#      properties:
+#        key-deserializer: org.apache.kafka.common.serialization.UUIDDeserializer
+#        value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
