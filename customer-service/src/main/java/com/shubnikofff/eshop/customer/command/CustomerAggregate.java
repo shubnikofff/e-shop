@@ -28,7 +28,7 @@ public class CustomerAggregate {
 
 	@EventSourcingHandler
 	public void on(CustomerCreatedEvent customerCreatedEvent) {
-		id = customerCreatedEvent.customerId();
-		name = customerCreatedEvent.customerName();
+		id = customerCreatedEvent.getCustomerId();
+		name = customerCreatedEvent.getCustomerName();
 	}
 }

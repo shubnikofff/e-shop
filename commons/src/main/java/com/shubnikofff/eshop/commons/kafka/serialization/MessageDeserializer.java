@@ -7,7 +7,6 @@ import com.shubnikofff.eshop.commons.kafka.message.KafkaMessageHeaders;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.serialization.Deserializer;
 
-import java.io.IOException;
 import java.util.logging.Logger;
 
 
@@ -28,7 +27,7 @@ public class MessageDeserializer<T> implements Deserializer<T> {
 
 		try {
 			return objectMapper.readValue(data, dataType);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new RuntimeException("Error when deserializing kafka message", e.getCause());
 		}
 	}

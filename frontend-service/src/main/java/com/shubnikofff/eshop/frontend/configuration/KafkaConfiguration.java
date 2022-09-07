@@ -1,11 +1,11 @@
 package com.shubnikofff.eshop.frontend.configuration;
 
+import com.shubnikofff.eshop.commons.event.BaseEvent;
 import com.shubnikofff.eshop.commons.kafka.message.CreateCustomerCommandMessage;
-import com.shubnikofff.eshop.commons.kafka.message.CustomerEventMessage;
 import com.shubnikofff.eshop.commons.kafka.message.UpdateCustomerCommandMessage;
-import com.shubnikofff.eshop.commons.kafka.topic.KafkaTopics;
 import com.shubnikofff.eshop.commons.kafka.serialization.MessageDeserializer;
 import com.shubnikofff.eshop.commons.kafka.serialization.MessageSerializer;
+import com.shubnikofff.eshop.commons.kafka.topic.KafkaTopics;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -54,7 +54,7 @@ public class KafkaConfiguration {
 	}
 
 	@Bean
-	public KafkaReceiver<Object, CustomerEventMessage> customerEventsReceiver() {
+	public KafkaReceiver<Object, ? extends BaseEvent> customerEventsReceiver() {
 		return createReceiver(Collections.singleton(KafkaTopics.CUSTOMER_EVENT_TOPIC));
 	}
 

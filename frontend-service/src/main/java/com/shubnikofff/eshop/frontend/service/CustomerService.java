@@ -1,7 +1,7 @@
 package com.shubnikofff.eshop.frontend.service;
 
+import com.shubnikofff.eshop.commons.event.BaseEvent;
 import com.shubnikofff.eshop.commons.kafka.message.CreateCustomerCommandMessage;
-import com.shubnikofff.eshop.commons.kafka.message.CustomerEventMessage;
 import com.shubnikofff.eshop.commons.kafka.message.UpdateCustomerCommandMessage;
 import com.shubnikofff.eshop.commons.kafka.topic.KafkaTopics;
 import com.shubnikofff.eshop.frontend.dto.CreateCustomerRequest;
@@ -29,7 +29,7 @@ public class CustomerService {
 	static String applicationName;
 	private final Sinks.Many<Object> eventPublisher = Sinks.many().multicast().directBestEffort();
 
-	private final KafkaReceiver<Object, CustomerEventMessage> customerEventsReceiver;
+	private final KafkaReceiver<Object, ? extends BaseEvent> customerEventsReceiver;
 
 	private final KafkaSender<Object, CreateCustomerCommandMessage> createCustomerCommandSender;
 
