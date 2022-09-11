@@ -1,6 +1,6 @@
 package com.shubnikofff.eshop.frontend.api;
 
-import com.shubnikofff.eshop.frontend.dto.CreateCustomerRequest;
+import com.shubnikofff.eshop.commons.request.CreateCustomerRequest;
 import com.shubnikofff.eshop.frontend.dto.UpdateCustomerRequest;
 import com.shubnikofff.eshop.frontend.service.CustomerService;
 import lombok.RequiredArgsConstructor;

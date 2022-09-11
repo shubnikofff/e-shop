@@ -1,9 +1,9 @@
 package com.shubnikofff.eshop.customer.service;
 
-import com.shubnikofff.eshop.commons.kafka.message.CreateCustomerCommandMessage;
 import com.shubnikofff.eshop.commons.kafka.message.CustomerEventMessage;
 import com.shubnikofff.eshop.commons.kafka.message.UpdateCustomerCommandMessage;
 import com.shubnikofff.eshop.commons.kafka.topic.KafkaTopics;
+import com.shubnikofff.eshop.commons.request.CreateCustomerRequest;
 import com.shubnikofff.eshop.customer.command.CreateCustomerCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,8 +27,8 @@ public class CustomerCommandListener {
 	private final CommandGateway commandGateway;
 
 	@KafkaHandler
-	void handleCreateCustomerCommand(CreateCustomerCommandMessage message) {
-		log.info("Received message {}", message);
+	void handleCreateCustomerCommand(CreateCustomerRequest request) {
+		log.info("Received request {}", request);
 
 //		commandGateway.sendAndWait(new CreateCustomerCommand(
 //				UUID.randomUUID(),
@@ -39,7 +39,7 @@ public class CustomerCommandListener {
 		commandGateway.sendAndWait(
 				CreateCustomerCommand.builder()
 						.customerId(UUID.randomUUID())
-						.customerName(message.customerName())
+						.customerName(request.customerName())
 						.build()
 		);
 

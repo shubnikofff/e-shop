@@ -1,10 +1,9 @@
 package com.shubnikofff.eshop.frontend.service;
 
 import com.shubnikofff.eshop.commons.event.BaseEvent;
-import com.shubnikofff.eshop.commons.kafka.message.CreateCustomerCommandMessage;
 import com.shubnikofff.eshop.commons.kafka.message.UpdateCustomerCommandMessage;
 import com.shubnikofff.eshop.commons.kafka.topic.KafkaTopics;
-import com.shubnikofff.eshop.frontend.dto.CreateCustomerRequest;
+import com.shubnikofff.eshop.commons.request.CreateCustomerRequest;
 import com.shubnikofff.eshop.frontend.dto.UpdateCustomerRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -32,7 +31,7 @@ public class CustomerService {
 
 	private final KafkaReceiver<Object, ? extends BaseEvent> customerEventsReceiver;
 
-	private final KafkaSender<Object, CreateCustomerCommandMessage> createCustomerCommandSender;
+	private final KafkaSender<Object, CreateCustomerRequest> createCustomerRequestSender;
 
 	private final KafkaSender<Object, UpdateCustomerCommandMessage> updateCustomerCommandSender;
 
@@ -57,13 +56,10 @@ public class CustomerService {
 	}
 
 	public Flux<Object> sendCreateCustomerCommand(CreateCustomerRequest createCustomerRequest) {
-		final var producerRecord = new ProducerRecord<>(KafkaTopics.CUSTOMER_COMMAND_TOPIC, new CreateCustomerCommandMessage(
-				createCustomerRequest.name(),
-				createCustomerRequest.initialBalance()
-		));
+		final var producerRecord = new ProducerRecord<>(KafkaTopics.CUSTOMER_COMMAND_TOPIC, createCustomerRequest);
 		final var senderRecord = SenderRecord.create(producerRecord, createCustomerRequest);
 
-		return createCustomerCommandSender.send(Mono.just(senderRecord)).map(SenderResult::correlationMetadata);
+		return createCustomerRequestSender.send(Mono.just(senderRecord)).map(SenderResult::correlationMetadata);
 	}
 
 	public Flux<Object> sendUpdateCustomerCommand(UpdateCustomerRequest updateCustomerRequest) {
