@@ -2,7 +2,7 @@ package com.shubnikofff.eshop.commons.event;
 
 import java.util.UUID;
 
-public class CustomerCreatedEvent extends BaseEvent {
+public class CustomerCreatedEvent implements BaseEvent {
 
 	private UUID customerId;
 

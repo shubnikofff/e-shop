@@ -1,14 +1,11 @@
 package com.shubnikofff.eshop.commons.event;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 
-abstract public class BaseEvent implements Serializable {
+public interface BaseEvent extends Serializable {
 
-	protected String eventName;
-
-	public void setEventName(String eventName) {
-		this.eventName = eventName;
-	}
-
-	abstract public String getEventName();
+	@JsonIgnore
+	String getEventName();
 }
