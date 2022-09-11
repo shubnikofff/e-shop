@@ -9,6 +9,7 @@ import com.shubnikofff.eshop.frontend.dto.UpdateCustomerRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -27,7 +28,7 @@ public class CustomerService {
 
 	@Value("${spring.application.name}")
 	static String applicationName;
-	private final Sinks.Many<Object> eventPublisher = Sinks.many().multicast().directBestEffort();
+	private final Sinks.Many<ServerSentEvent<BaseEvent>> eventPublisher = Sinks.many().multicast().directBestEffort();
 
 	private final KafkaReceiver<Object, ? extends BaseEvent> customerEventsReceiver;
 
@@ -40,14 +41,18 @@ public class CustomerService {
 		customerEventsReceiver.receive()
 				.doOnNext(record -> {
 					final var value = record.value();
-					eventPublisher.tryEmitNext(value);
+					eventPublisher.tryEmitNext(ServerSentEvent.<BaseEvent>builder()
+							.event(value.getEventName())
+							.data(value)
+							.build()
+					);
 					record.receiverOffset().acknowledge();
 				})
 				.subscribeOn(Schedulers.boundedElastic())
 				.subscribe();
 	}
 
-	public Flux<Object> getCustomerEvents() {
+	public Flux<ServerSentEvent<BaseEvent>> getCustomerEvents() {
 		return eventPublisher.asFlux();
 	}
 

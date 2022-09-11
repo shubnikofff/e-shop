@@ -10,5 +10,5 @@ abstract public class BaseEvent implements Serializable {
 		this.eventName = eventName;
 	}
 
-	abstract protected String getEventName();
+	abstract public String getEventName();
 }
