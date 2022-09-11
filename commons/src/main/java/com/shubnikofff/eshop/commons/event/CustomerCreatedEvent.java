@@ -4,18 +4,19 @@ import java.util.UUID;
 
 public class CustomerCreatedEvent extends BaseEvent {
 
-	public static final String EVENT_NAME = "CUSTOMER_CREATED_EVENT";
-
 	private UUID customerId;
 
 	private String customerName;
 
 	public CustomerCreatedEvent() {
-		super(EVENT_NAME);
+	}
+
+	@Override
+	public String getEventName() {
+		return "CUSTOMER_CREATED_EVENT";
 	}
 
 	public CustomerCreatedEvent(UUID customerId, String customerName) {
-		super(EVENT_NAME);
 		this.customerId = customerId;
 		this.customerName = customerName;
 	}
