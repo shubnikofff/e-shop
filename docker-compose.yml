@@ -1,6 +1,18 @@
 version: '3'
 services:
 
+  postgres:
+    image: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init-postgres.sh:/docker-entrypoint-initdb.d/init-postgres.sh
+#      - postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=app
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_MULTIPLE_DATABASES=customers
+
   zookeeper:
     image: bitnami/zookeeper
     ports:
@@ -45,3 +57,4 @@ services:
 #  kafka:
 #  axon-server-data:
 #  axon-server-events:
+#  postgres
