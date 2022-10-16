@@ -39,7 +39,7 @@ public class MessageDeserializer<T> implements Deserializer<T> {
 	}
 
 	public static JavaType resolveType(byte[] data, Headers headers) {
-		final var type = new String(headers.lastHeader(KafkaMessageHeaders.TYPE).value());
+		final var type = new String(headers.lastHeader(KafkaMessageHeaders.CONTENT_TYPE).value());
 		return TypeFactory.defaultInstance().constructFromCanonical(type);
 	}
 }

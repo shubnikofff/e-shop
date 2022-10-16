@@ -20,7 +20,7 @@ public class MessageConverter implements KafkaMessageConverter<String, byte[]> {
 	@Override
 	public ProducerRecord<String, byte[]> createKafkaMessage(EventMessage<?> eventMessage, String topic) {
 
-		final var headers = new RecordHeaders(new Header[]{new RecordHeader(KafkaMessageHeaders.TYPE, eventMessage.getPayloadType().getName().getBytes())});
+		final var headers = new RecordHeaders(new Header[]{new RecordHeader(KafkaMessageHeaders.CONTENT_TYPE, eventMessage.getPayloadType().getName().getBytes())});
 
 		try {
 			return new ProducerRecord<>(

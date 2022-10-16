@@ -1,15 +1,15 @@
 package com.shubnikofff.eshop.customer.command;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
 import java.util.UUID;
 
+@AllArgsConstructor
 @Getter
-@Builder
-public class CreateCustomerCommand {
+public class ToggleCustomerCommand {
+
 	@TargetAggregateIdentifier
 	public UUID customerId;
-	private String customerName;
 }

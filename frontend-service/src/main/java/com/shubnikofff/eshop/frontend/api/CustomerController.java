@@ -1,7 +1,7 @@
 package com.shubnikofff.eshop.frontend.api;
 
 import com.shubnikofff.eshop.commons.request.CreateCustomerRequest;
-import com.shubnikofff.eshop.frontend.dto.UpdateCustomerRequest;
+import com.shubnikofff.eshop.commons.request.ToggleCustomerRequest;
 import com.shubnikofff.eshop.frontend.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,11 +22,11 @@ public class CustomerController {
 
 	@PostMapping(value = "/")
 	public Flux<Object> createCustomer(@RequestBody @Valid CreateCustomerRequest request) {
-		return customerService.sendCreateCustomerCommand(request);
+		return customerService.createCustomer(request);
 	}
 
-	@PutMapping(value = "/")
-	public Flux<Object> updateCustomer(@RequestBody @Valid UpdateCustomerRequest request) {
-		return customerService.sendUpdateCustomerCommand(request);
+	@PutMapping(value = "/toggle")
+	public Flux<Object> toggleCustomer(@RequestBody @Valid ToggleCustomerRequest request) {
+		return customerService.toggleCustomer(request);
 	}
 }

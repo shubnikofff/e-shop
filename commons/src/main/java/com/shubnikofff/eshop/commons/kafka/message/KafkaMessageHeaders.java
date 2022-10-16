@@ -7,7 +7,7 @@ final public class KafkaMessageHeaders {
 	/**
 	 * Type of the message body value
 	 */
-	public static final String TYPE = "contentType";
+	public static final String CONTENT_TYPE = "contentType";
 
 	public static final String SENDER = "sender";
 }

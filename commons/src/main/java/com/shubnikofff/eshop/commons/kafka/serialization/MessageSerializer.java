@@ -31,7 +31,7 @@ final public class MessageSerializer<T> implements Serializer<T> {
 
 	@Override
 	public byte[] serialize(String topic, Headers headers, T data) {
-		headers.add(KafkaMessageHeaders.TYPE, data.getClass().getName().getBytes(StandardCharsets.UTF_8));
+		headers.add(KafkaMessageHeaders.CONTENT_TYPE, data.getClass().getName().getBytes(StandardCharsets.UTF_8));
 		return serialize(topic, data);
 	}
 }

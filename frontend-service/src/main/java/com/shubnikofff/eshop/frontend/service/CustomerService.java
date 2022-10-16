@@ -1,10 +1,9 @@
 package com.shubnikofff.eshop.frontend.service;
 
 import com.shubnikofff.eshop.commons.event.BaseEvent;
-import com.shubnikofff.eshop.commons.kafka.message.UpdateCustomerCommandMessage;
 import com.shubnikofff.eshop.commons.kafka.topic.KafkaTopics;
 import com.shubnikofff.eshop.commons.request.CreateCustomerRequest;
-import com.shubnikofff.eshop.frontend.dto.UpdateCustomerRequest;
+import com.shubnikofff.eshop.commons.request.ToggleCustomerRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +32,7 @@ public class CustomerService {
 
 	private final KafkaSender<Object, CreateCustomerRequest> createCustomerRequestSender;
 
-	private final KafkaSender<Object, UpdateCustomerCommandMessage> updateCustomerCommandSender;
+	private final KafkaSender<Object, ToggleCustomerRequest> toggleCustomerRequestSender;
 
 	@PostConstruct
 	private void consumeEvents() {
@@ -55,19 +54,17 @@ public class CustomerService {
 		return eventPublisher.asFlux();
 	}
 
-	public Flux<Object> sendCreateCustomerCommand(CreateCustomerRequest createCustomerRequest) {
+	public Flux<Object> createCustomer(CreateCustomerRequest createCustomerRequest) {
 		final var producerRecord = new ProducerRecord<>(KafkaTopics.CUSTOMER_COMMAND_TOPIC, createCustomerRequest);
 		final var senderRecord = SenderRecord.create(producerRecord, createCustomerRequest);
 
 		return createCustomerRequestSender.send(Mono.just(senderRecord)).map(SenderResult::correlationMetadata);
 	}
 
-	public Flux<Object> sendUpdateCustomerCommand(UpdateCustomerRequest updateCustomerRequest) {
-		final var producerRecord = new ProducerRecord<>(KafkaTopics.CUSTOMER_COMMAND_TOPIC, new UpdateCustomerCommandMessage(
-				updateCustomerRequest.name()
-		));
-		final var senderRecord = SenderRecord.create(producerRecord, updateCustomerRequest);
+	public Flux<Object> toggleCustomer(ToggleCustomerRequest toggleCustomerRequest) {
+		final var producerRecord = new ProducerRecord<>(KafkaTopics.CUSTOMER_COMMAND_TOPIC, toggleCustomerRequest);
+		final var senderRecord = Mono.just(SenderRecord.create(producerRecord, toggleCustomerRequest));
 
-		return updateCustomerCommandSender.send(Mono.just(senderRecord)).map(SenderResult::correlationMetadata);
+		return toggleCustomerRequestSender.send(senderRecord).map(SenderResult::correlationMetadata);
 	}
 }

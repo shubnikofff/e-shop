@@ -11,7 +11,7 @@ services:
     environment:
       - POSTGRES_USER=app
       - POSTGRES_PASSWORD=secret
-      - POSTGRES_MULTIPLE_DATABASES=customers
+      - POSTGRES_MULTIPLE_DATABASES=customer,account
 
   zookeeper:
     image: bitnami/zookeeper

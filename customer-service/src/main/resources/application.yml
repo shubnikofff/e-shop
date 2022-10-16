@@ -1,6 +1,13 @@
 spring:
   application:
     name: customer-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/customer
+    username: app
+    password: secret
+  jpa:
+    hibernate:
+      ddl-auto: update
   kafka:
     bootstrap-servers: localhost:9092
     client-id: customer-service
@@ -16,6 +23,10 @@ spring:
       value-serializer: com.shubnikofff.eshop.commons.kafka.serialization.MessageSerializer
 
 axon:
+  eventhandling:
+    processors:
+      customer-service:
+        mode: TRACKING
   kafka:
     bootstrap-servers: localhost:9092
     client-id: customer-service
@@ -25,13 +36,3 @@ axon:
     producer:
       transaction-id-prefix: customer-event
       event-processor-mode: subscribing
-#      properties:
-#        "[key-serializer]": org.apache.kafka.common.serialization.UUIDSerializer
-#        "[value-serializer]": com.shubnikofff.eshop.commons.kafka.serialization.MessageSerializer
-#    consumer:
-#      enable-auto-commit: true
-#      auto-commit-interval: 3000
-#      event-processor-mode: tracking
-#      properties:
-#        key-deserializer: org.apache.kafka.common.serialization.UUIDDeserializer
-#        value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
