@@ -1,7 +1,7 @@
 package com.shubnikofff.eshop.frontend.service;
 
 import com.shubnikofff.eshop.commons.event.BaseEvent;
-import com.shubnikofff.eshop.commons.kafka.topic.KafkaTopics;
+import com.shubnikofff.eshop.commons.kafka.KafkaTopics;
 import com.shubnikofff.eshop.commons.request.CreateCustomerRequest;
 import com.shubnikofff.eshop.commons.request.ToggleCustomerRequest;
 import lombok.RequiredArgsConstructor;

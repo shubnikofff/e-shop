@@ -3,7 +3,7 @@ package com.shubnikofff.eshop.frontend.configuration;
 import com.shubnikofff.eshop.commons.event.BaseEvent;
 import com.shubnikofff.eshop.commons.kafka.serialization.MessageDeserializer;
 import com.shubnikofff.eshop.commons.kafka.serialization.MessageSerializer;
-import com.shubnikofff.eshop.commons.kafka.topic.KafkaTopics;
+import com.shubnikofff.eshop.commons.kafka.KafkaTopics;
 import com.shubnikofff.eshop.commons.request.CreateCustomerRequest;
 import com.shubnikofff.eshop.commons.request.ToggleCustomerRequest;
 import org.apache.kafka.clients.consumer.ConsumerConfig;

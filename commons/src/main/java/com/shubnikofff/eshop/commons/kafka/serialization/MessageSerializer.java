@@ -1,7 +1,7 @@
 package com.shubnikofff.eshop.commons.kafka.serialization;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.shubnikofff.eshop.commons.kafka.message.KafkaMessageHeaders;
+import com.shubnikofff.eshop.commons.kafka.KafkaHeaders;
 import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.serialization.Serializer;
@@ -31,7 +31,7 @@ final public class MessageSerializer<T> implements Serializer<T> {
 
 	@Override
 	public byte[] serialize(String topic, Headers headers, T data) {
-		headers.add(KafkaMessageHeaders.CONTENT_TYPE, data.getClass().getName().getBytes(StandardCharsets.UTF_8));
+		headers.add(KafkaHeaders.CONTENT_TYPE, data.getClass().getName().getBytes(StandardCharsets.UTF_8));
 		return serialize(topic, data);
 	}
 }

@@ -1,6 +1,6 @@
 package com.shubnikofff.eshop.customer.service;
 
-import com.shubnikofff.eshop.commons.kafka.topic.KafkaTopics;
+import com.shubnikofff.eshop.commons.kafka.KafkaTopics;
 import com.shubnikofff.eshop.commons.request.CreateCustomerRequest;
 import com.shubnikofff.eshop.commons.request.ToggleCustomerRequest;
 import com.shubnikofff.eshop.customer.command.CreateCustomerCommand;

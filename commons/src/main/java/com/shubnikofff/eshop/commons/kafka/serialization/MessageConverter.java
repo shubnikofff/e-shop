@@ -2,7 +2,7 @@ package com.shubnikofff.eshop.commons.kafka.serialization;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.shubnikofff.eshop.commons.kafka.message.KafkaMessageHeaders;
+import com.shubnikofff.eshop.commons.kafka.KafkaHeaders;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.Header;
@@ -20,7 +20,7 @@ public class MessageConverter implements KafkaMessageConverter<String, byte[]> {
 	@Override
 	public ProducerRecord<String, byte[]> createKafkaMessage(EventMessage<?> eventMessage, String topic) {
 
-		final var headers = new RecordHeaders(new Header[]{new RecordHeader(KafkaMessageHeaders.CONTENT_TYPE, eventMessage.getPayloadType().getName().getBytes())});
+		final var headers = new RecordHeaders(new Header[]{new RecordHeader(KafkaHeaders.CONTENT_TYPE, eventMessage.getPayloadType().getName().getBytes())});
 
 		try {
 			return new ProducerRecord<>(

@@ -3,7 +3,7 @@ package com.shubnikofff.eshop.commons.kafka.serialization;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.shubnikofff.eshop.commons.kafka.message.KafkaMessageHeaders;
+import com.shubnikofff.eshop.commons.kafka.KafkaHeaders;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.serialization.Deserializer;
 
@@ -39,7 +39,7 @@ public class MessageDeserializer<T> implements Deserializer<T> {
 	}
 
 	public static JavaType resolveType(byte[] data, Headers headers) {
-		final var type = new String(headers.lastHeader(KafkaMessageHeaders.CONTENT_TYPE).value());
+		final var type = new String(headers.lastHeader(KafkaHeaders.CONTENT_TYPE).value());
 		return TypeFactory.defaultInstance().constructFromCanonical(type);
 	}
 }
